@@ -1,42 +1,40 @@
-import { routes } from './routes';
-import { Demo } from './demo/Demo';
-import { injectStyles } from './styles';
+import { createRenderer, resizeRenderer } from './util';
+import {
+  PerspectiveCamera,
+  Scene,
+  BoxGeometry,
+  MeshPhysicalMaterial,
+  Mesh,
+  PointLight,
+} from 'three';
+import { CameraController } from './CameraController';
 
-injectStyles();
+const renderer = createRenderer();
+const camera = new PerspectiveCamera(75, 1, 0.01, 0.8);
+const cameraController = new CameraController(0.2, 0.01);
+const scene = new Scene();
 
-const demoName = new URLSearchParams(window.location.search).get('demo');
+const geometry = new BoxGeometry(0.1, 0.1, 0.1);
+const material = new MeshPhysicalMaterial({
+  color: 0xff0000,
+  metalness: 0.1,
+  roughness: 0.5,
+});
+const box = new Mesh(geometry, material);
+scene.add(box);
 
-if (demoName === null) {
-  const cont = document.createElement('div');
-  cont.className = 'demo-list';
-  document.body.appendChild(cont);
-  for (const routeName of routes.keys()) {
-    const a = document.createElement('a');
-    a.innerHTML = routeName;
-    a.href = `/?demo=${routeName}`;
-    cont.appendChild(a);
-    cont.appendChild(document.createElement('br'));
-  }
-} else {
-  const createDemo = routes.get(demoName);
+const light = new PointLight();
+scene.add(light);
 
-  if (createDemo === undefined) {
-    const msg = 'demo is not found';
-    alert(msg);
-    throw new Error(msg);
-  }
+const render = () => {
+  resizeRenderer(renderer, camera);
 
-  start(createDemo);
-}
+  light.position.copy(camera.position);
+  cameraController.update(camera);
 
-function start(createDemo: () => Demo) {
-  const demo = createDemo();
+  renderer.render(scene, camera);
 
-  const render = () => {
-    demo.render();
+  requestAnimationFrame(render);
+};
 
-    requestAnimationFrame(render);
-  };
-
-  render();
-}
+render();

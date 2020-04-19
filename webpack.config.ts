@@ -41,7 +41,7 @@ export default {
   module: {
     rules: [
       { test: /\.ts/, loader: 'ts-loader' },
-      { test: /\.glsl|css/, loader: 'raw-loader' },
+      { test: /\.glsl/, loader: 'raw-loader' },
       { test: /\.gltf/, loader: 'gltf-webpack-loader' },
       { test: /\.bin|png|svg|jpg|gif/, loader: 'file-loader' },
     ],
