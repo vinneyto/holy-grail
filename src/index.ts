@@ -24,6 +24,8 @@ import {
   Camera,
   Vector3,
   ConeGeometry,
+  AnimationMixer,
+  Clock,
 } from 'three';
 import { CameraController } from './CameraController';
 import knightRunnigUrl from './assets/knight_runnig/scene.gltf';
@@ -76,6 +78,9 @@ async function start() {
   const character = getCharacter(knightGltf);
   scene.add(character);
 
+  const mixer = new AnimationMixer(character);
+  const runAction = mixer.clipAction(knightGltf.animations[0]);
+
   const cone = createCone();
   scene.add(cone);
 
@@ -89,7 +94,7 @@ async function start() {
 
   // scene.add(new CameraHelper(sun.shadow.camera));
 
-  const gameController = new GameController(character, cone);
+  const gameController = new GameController(character, cone, runAction);
 
   subscribeGroundClick(scene, camera, (v: Vector3) => {
     if (!cameraController.allowRotation) {
@@ -109,15 +114,17 @@ async function start() {
     }
   });
 
-  let time = window.performance.now();
+  const clock = new Clock();
+
+  const time = window.performance.now();
   const render = () => {
     resizeRenderer(renderer, camera);
 
-    const currentTime = window.performance.now();
-    const delta = currentTime - time;
-    time = currentTime;
+    const delta = clock.getDelta();
 
     gameController.update(delta);
+
+    mixer.update(delta);
 
     cameraController.center.copy(character.position);
 

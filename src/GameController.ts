@@ -1,6 +1,6 @@
-import { Object3D, Vector3, Matrix4 } from 'three';
+import { Object3D, Vector3, Matrix4, AnimationAction } from 'three';
 
-const VELOCITY = 0.001;
+const VELOCITY = 2;
 const CONE_HEIGHT = 1;
 
 export class GameController {
@@ -9,7 +9,8 @@ export class GameController {
 
   constructor(
     private readonly character: Object3D,
-    private readonly cone: Object3D
+    private readonly cone: Object3D,
+    private readonly runAnimationAction: AnimationAction
   ) {}
 
   moveCharacterTo(point: Vector3) {
@@ -26,6 +27,7 @@ export class GameController {
 
     this.cone.visible = true;
     this.cone.position.set(point.x, CONE_HEIGHT / 2, point.z);
+    this.runAnimationAction.play();
   }
 
   update(delta: number) {
@@ -35,8 +37,12 @@ export class GameController {
       this.cone.visible = false;
     }
 
-    if (distance < 0.01) {
+    if (distance < 0.05) {
       this.characterVelocity.set(0, 0, 0);
+
+      if (this.runAnimationAction.isRunning()) {
+        this.runAnimationAction.stop();
+      }
     }
 
     this.character.position.add(
