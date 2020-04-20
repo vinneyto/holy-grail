@@ -1,4 +1,5 @@
 import { Camera, Vector3, Vector2 } from 'three';
+import { MouseEventType, getPointFromEvent } from './util';
 
 export class CameraController {
   private azimuthalAngle = 0;
@@ -8,22 +9,14 @@ export class CameraController {
     public radius = 0.3,
     public sensitivity = 0.01,
     public center = new Vector3(0, 0, 0),
-    public allowRotate = true
+    public allowRotation = true
   ) {
     let lastCoords = new Vector2();
 
-    const onMouseDown = (e: MouseEvent | TouchEvent) => {
-      lastCoords = new Vector2();
-      if (e instanceof TouchEvent) {
-        lastCoords.set(
-          e.changedTouches[0].clientX,
-          e.changedTouches[0].clientY
-        );
-      } else {
-        lastCoords.set(e.clientX, e.clientY);
-      }
+    const onMouseDown = (e: MouseEventType) => {
+      lastCoords = getPointFromEvent(e);
 
-      if (this.allowRotate) {
+      if (this.allowRotation) {
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
         document.addEventListener('touchmove', onMouseMove);
@@ -31,13 +24,8 @@ export class CameraController {
       }
     };
 
-    const onMouseMove = (e: MouseEvent | TouchEvent) => {
-      const coords = new Vector2();
-      if (e instanceof TouchEvent) {
-        coords.set(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-      } else {
-        coords.set(e.clientX, e.clientY);
-      }
+    const onMouseMove = (e: MouseEventType) => {
+      const coords = getPointFromEvent(e);
       const delta = coords.clone().sub(lastCoords);
 
       this.rotateDelta(delta);
@@ -45,7 +33,7 @@ export class CameraController {
       lastCoords = coords;
     };
 
-    const onMouseUp = () => {
+    const onMouseUp = (e: MouseEventType) => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('touchmove', onMouseMove);

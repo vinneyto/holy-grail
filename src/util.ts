@@ -4,6 +4,7 @@ import {
   PerspectiveCamera,
   TextureLoader,
   Texture,
+  Vector2,
 } from 'three';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 
@@ -75,4 +76,16 @@ export async function fetchTexture(url: string) {
       () => reject(new Error(`unable to load texture ${url}`))
     );
   });
+}
+
+export type MouseEventType = MouseEvent | TouchEvent;
+
+export function getPointFromEvent(e: MouseEventType) {
+  const coords = new Vector2();
+  if (e instanceof TouchEvent) {
+    coords.set(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  } else {
+    coords.set(e.clientX, e.clientY);
+  }
+  return coords;
 }

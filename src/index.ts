@@ -3,6 +3,8 @@ import {
   resizeRenderer,
   fetchGltf,
   fetchTexture,
+  MouseEventType,
+  getPointFromEvent,
 } from './util';
 import {
   PerspectiveCamera,
@@ -17,10 +19,27 @@ import {
   Color,
   BoxGeometry,
   AxesHelper,
+  Vector2,
+  Raycaster,
+  Camera,
+  Vector3,
+  ConeGeometry,
 } from 'three';
 import { CameraController } from './CameraController';
 import knightRunnigUrl from './assets/knight_runnig/scene.gltf';
 import grassUrl from './assets/grass.jpg';
+import { GameController } from './GameController';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const info = document.createElement('h2');
+info.style.position = 'fixed';
+info.style.left = '0';
+info.style.top = '0';
+info.style.zIndex = '1';
+info.style.padding = '8px';
+info.style.margin = '0';
+info.innerHTML = 'Press and hold Shift to point destination';
+document.body.appendChild(info);
 
 async function start() {
   const knightGltf = await fetchGltf(knightRunnigUrl);
@@ -36,7 +55,7 @@ async function start() {
 
   const camera = new PerspectiveCamera(75, 1, 0.1, 100);
   const cameraController = new CameraController(10, 0.01);
-  cameraController.setRotation(0.8, -2.7);
+  cameraController.setRotation(0.9, -2.7);
   const scene = new Scene();
 
   const axes = new AxesHelper(2);
@@ -52,40 +71,55 @@ async function start() {
   scene.add(box);
 
   const ground = createGround(grassTexture);
-  ground.castShadow = false;
-  ground.receiveShadow = true;
   scene.add(ground);
 
-  knightGltf.scene.traverse((obj) => {
-    if (obj.name === 'Guard03_Mesh_Guard_03_0' && obj instanceof Mesh) {
-      obj.castShadow = true;
-    }
-  });
+  const character = getCharacter(knightGltf);
+  scene.add(character);
 
-  knightGltf.scene.scale.set(0.6, 0.6, 0.6);
-  scene.add(knightGltf.scene);
+  const cone = createCone();
+  scene.add(cone);
 
   const ambientLight = new AmbientLight('white');
   ambientLight.intensity = 0.7;
   scene.add(ambientLight);
 
-  const sun = new DirectionalLight('white');
-  const shadowCameraSize = 10;
-  sun.castShadow = true;
-  sun.shadow.camera.near = -shadowCameraSize;
-  sun.shadow.camera.far = shadowCameraSize;
-  sun.shadow.camera.left = -shadowCameraSize;
-  sun.shadow.camera.right = shadowCameraSize;
-  sun.shadow.camera.top = shadowCameraSize;
-  sun.shadow.camera.bottom = -shadowCameraSize;
-
+  const sun = createSun();
   sun.position.set(0.5, 1, 0.5).normalize();
   scene.add(sun);
 
   // scene.add(new CameraHelper(sun.shadow.camera));
 
+  const gameController = new GameController(character, cone);
+
+  subscribeGroundClick(scene, camera, (v: Vector3) => {
+    if (!cameraController.allowRotation) {
+      gameController.moveCharacterTo(v);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Shift') {
+      cameraController.allowRotation = false;
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'Shift') {
+      cameraController.allowRotation = true;
+    }
+  });
+
+  let time = window.performance.now();
   const render = () => {
     resizeRenderer(renderer, camera);
+
+    const currentTime = window.performance.now();
+    const delta = currentTime - time;
+    time = currentTime;
+
+    gameController.update(delta);
+
+    cameraController.center.copy(character.position);
 
     cameraController.update(camera);
     renderer.render(scene, camera);
@@ -97,9 +131,71 @@ async function start() {
 
 start();
 
+function getCharacter(gltf: GLTF) {
+  const character = gltf.scene;
+  character.traverse((obj) => {
+    if (obj.name === 'Guard03_Mesh_Guard_03_0' && obj instanceof Mesh) {
+      obj.castShadow = true;
+    }
+  });
+  character.scale.set(0.6, 0.6, 0.6);
+  return character;
+}
+
 function createGround(map: Texture) {
   const geometry = new PlaneGeometry(100, 100);
   const material = new MeshLambertMaterial({ map });
   geometry.rotateX(-Math.PI / 2);
-  return new Mesh(geometry, material);
+  const ground = new Mesh(geometry, material);
+  ground.name = 'ground';
+  ground.castShadow = false;
+  ground.receiveShadow = true;
+  return ground;
+}
+
+function createSun() {
+  const sun = new DirectionalLight('white');
+  const shadowCameraSize = 10;
+  sun.castShadow = true;
+  sun.shadow.camera.near = -shadowCameraSize;
+  sun.shadow.camera.far = shadowCameraSize;
+  sun.shadow.camera.left = -shadowCameraSize;
+  sun.shadow.camera.right = shadowCameraSize;
+  sun.shadow.camera.top = shadowCameraSize;
+  sun.shadow.camera.bottom = -shadowCameraSize;
+  return sun;
+}
+
+function createCone() {
+  const geometry = new ConeGeometry(0.2, 1);
+  geometry.rotateX(Math.PI);
+  const material = new MeshLambertMaterial({ color: 'blue' });
+  const mesh = new Mesh(geometry, material);
+  mesh.castShadow = true;
+  return mesh;
+}
+
+function subscribeGroundClick(
+  scene: Scene,
+  camera: Camera,
+  handler: (v: Vector3) => void
+) {
+  const handleDestination = (e: MouseEventType) => {
+    const point = getPointFromEvent(e);
+    const mouse = new Vector2(
+      (point.x / window.innerWidth) * 2 - 1,
+      -(point.y / window.innerHeight) * 2 + 1
+    );
+    const raycaster = new Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0 && intersects[0].object.name === 'ground') {
+      handler(intersects[0].point);
+    }
+  };
+
+  document.addEventListener('mousedown', handleDestination);
+  document.addEventListener('touchstart', handleDestination);
 }
