@@ -4,6 +4,7 @@ import { MouseEventType, getPointFromEvent } from './util';
 export class CameraController {
   private azimuthalAngle = 0;
   private polarAngle = 0;
+  public moving = false;
 
   constructor(
     public radius = 0.3,
@@ -29,6 +30,7 @@ export class CameraController {
       const delta = coords.clone().sub(lastCoords);
 
       this.rotateDelta(delta);
+      this.moving = true;
 
       lastCoords = coords;
     };
@@ -38,6 +40,7 @@ export class CameraController {
       document.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('touchmove', onMouseMove);
       document.removeEventListener('touchend', onMouseUp);
+      this.moving = false;
     };
 
     document.addEventListener('mousedown', onMouseDown);

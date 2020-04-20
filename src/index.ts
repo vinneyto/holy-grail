@@ -33,15 +33,15 @@ import grassUrl from './assets/grass.jpg';
 import { GameController } from './GameController';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 
-const info = document.createElement('h2');
-info.style.position = 'fixed';
-info.style.left = '0';
-info.style.top = '0';
-info.style.zIndex = '1';
-info.style.padding = '8px';
-info.style.margin = '0';
-info.innerHTML = 'Press and hold Shift to point destination';
-document.body.appendChild(info);
+// const info = document.createElement('h2');
+// info.style.position = 'fixed';
+// info.style.left = '0';
+// info.style.top = '0';
+// info.style.zIndex = '1';
+// info.style.padding = '8px';
+// info.style.margin = '0';
+// info.innerHTML = 'Press and hold Shift to point destination';
+// document.body.appendChild(info);
 
 async function start() {
   const knightGltf = await fetchGltf(knightRunnigUrl);
@@ -97,20 +97,8 @@ async function start() {
   const gameController = new GameController(character, cone, runAction);
 
   subscribeGroundClick(scene, camera, (v: Vector3) => {
-    if (!cameraController.allowRotation) {
+    if (!cameraController.moving) {
       gameController.moveCharacterTo(v);
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Shift') {
-      cameraController.allowRotation = false;
-    }
-  });
-
-  document.addEventListener('keyup', (e) => {
-    if (e.key === 'Shift') {
-      cameraController.allowRotation = true;
     }
   });
 
@@ -203,6 +191,6 @@ function subscribeGroundClick(
     }
   };
 
-  document.addEventListener('mousedown', handleDestination);
-  document.addEventListener('touchstart', handleDestination);
+  document.addEventListener('mouseup', handleDestination);
+  document.addEventListener('touchend', handleDestination);
 }
