@@ -35,7 +35,7 @@ export class CameraController {
       lastCoords = coords;
     };
 
-    const onMouseUp = (e: MouseEventType) => {
+    const onMouseUp = () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('touchmove', onMouseMove);

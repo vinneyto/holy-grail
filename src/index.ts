@@ -33,16 +33,6 @@ import grassUrl from './assets/grass.jpg';
 import { GameController } from './GameController';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 
-// const info = document.createElement('h2');
-// info.style.position = 'fixed';
-// info.style.left = '0';
-// info.style.top = '0';
-// info.style.zIndex = '1';
-// info.style.padding = '8px';
-// info.style.margin = '0';
-// info.innerHTML = 'Press and hold Shift to point destination';
-// document.body.appendChild(info);
-
 async function start() {
   const knightGltf = await fetchGltf(knightRunnigUrl);
   const grassTexture = await fetchTexture(grassUrl);
@@ -104,7 +94,6 @@ async function start() {
 
   const clock = new Clock();
 
-  const time = window.performance.now();
   const render = () => {
     resizeRenderer(renderer, camera);
 
