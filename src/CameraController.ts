@@ -5,9 +5,9 @@ export class CameraController {
   private polarAngle = 0;
 
   constructor(
-    private readonly radius = 0.3,
-    private readonly sensitivity = 0.01,
-    private readonly center = new Vector3(0, 0, 0)
+    public readonly radius = 0.3,
+    public readonly sensitivity = 0.01,
+    public readonly center = new Vector3(0, 0, 0)
   ) {
     let lastCoords = new Vector2();
 
