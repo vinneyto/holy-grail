@@ -3,7 +3,6 @@ import {
   Color,
   PerspectiveCamera,
   Scene,
-  AxesHelper,
   PlaneGeometry,
   MeshLambertMaterial,
   Mesh,
@@ -20,6 +19,7 @@ import { resizeRenderer, fetchGltf, fetchTexture } from './util';
 import { CameraController } from './CameraController';
 import characterGltfSrc from './assets/knight_runnig/scene.gltf';
 import grassImageUrl from './assets/grass.jpg';
+import { CharacterController } from './GameController';
 
 async function start() {
   const renderer = createRenderer();
@@ -29,9 +29,6 @@ async function start() {
   const cameraController = new CameraController(6, 0.01);
   cameraController.setRotation(Math.PI / 8, 0);
   const scene = new Scene();
-
-  const axes = new AxesHelper(2);
-  scene.add(axes);
 
   const groundTexture = await fetchTexture(grassImageUrl);
   groundTexture.wrapS = RepeatWrapping;
@@ -56,6 +53,8 @@ async function start() {
   const ambient = new AmbientLight();
   scene.add(ambient);
 
+  const characterController = new CharacterController(characterGltf.scene);
+
   document.addEventListener('mouseup', (e) => {
     const mouse = new Vector2(
       (e.clientX / window.innerWidth) * 2 - 1,
@@ -67,7 +66,7 @@ async function start() {
     const intersects = raycaster.intersectObjects(scene.children);
 
     if (intersects.length > 0 && intersects[0].object.name === 'ground') {
-      console.log(intersects[0].point);
+      characterController.startMovement(intersects[0].point);
     }
   });
 
