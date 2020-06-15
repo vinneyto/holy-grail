@@ -26,8 +26,6 @@ Demo for HolyJS 2020 Workshop
 
 - [character-rotation](https://github.com/vinneyto/holy-grail/blob/character-rotation/src/GameController.ts#L7)
 
----
-
 ## Links
 
 [Turntable camera](https://three-shader.web.app/?demo=vinneyto-camera-demo)
