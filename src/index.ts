@@ -10,8 +10,9 @@ import {
   DoubleSide,
   DirectionalLight,
 } from 'three';
-import { resizeRenderer } from './util';
+import { resizeRenderer, fetchGltf } from './util';
 import { CameraController } from './CameraController';
+import characterGltfSrc from './assets/knight_runnig/scene.gltf';
 
 async function start() {
   const renderer = createRenderer();
@@ -25,6 +26,10 @@ async function start() {
 
   const ground = createGround();
   scene.add(ground);
+
+  const characterGltf = await fetchGltf(characterGltfSrc);
+  characterGltf.scene.scale.set(0.5, 0.5, 0.5);
+  scene.add(characterGltf.scene);
 
   const sun = createSun();
   sun.position.set(0, 1, 0);
