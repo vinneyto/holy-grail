@@ -13,6 +13,8 @@ import {
   PCFSoftShadowMap,
   Texture,
   RepeatWrapping,
+  Raycaster,
+  Vector2,
 } from 'three';
 import { resizeRenderer, fetchGltf, fetchTexture } from './util';
 import { CameraController } from './CameraController';
@@ -54,6 +56,21 @@ async function start() {
   const ambient = new AmbientLight();
   scene.add(ambient);
 
+  document.addEventListener('mouseup', (e) => {
+    const mouse = new Vector2(
+      (e.clientX / window.innerWidth) * 2 - 1,
+      -(e.clientY / window.innerHeight) * 2 + 1
+    );
+    const raycaster = new Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0 && intersects[0].object.name === 'ground') {
+      console.log(intersects[0].point);
+    }
+  });
+
   const render = () => {
     resizeRenderer(renderer, camera);
 
@@ -93,6 +110,7 @@ function createGround(texture: Texture) {
   const ground = new Mesh(geometry, material);
   ground.rotation.x = Math.PI / 2;
   ground.receiveShadow = true;
+  ground.name = 'ground';
   return ground;
 }
 
