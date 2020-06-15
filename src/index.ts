@@ -11,24 +11,32 @@ import {
   DirectionalLight,
   AmbientLight,
   PCFSoftShadowMap,
+  Texture,
+  RepeatWrapping,
 } from 'three';
-import { resizeRenderer, fetchGltf } from './util';
+import { resizeRenderer, fetchGltf, fetchTexture } from './util';
 import { CameraController } from './CameraController';
 import characterGltfSrc from './assets/knight_runnig/scene.gltf';
+import grassImageUrl from './assets/grass.jpg';
 
 async function start() {
   const renderer = createRenderer();
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFSoftShadowMap;
   const camera = new PerspectiveCamera(75, 1, 0.1, 100);
-  const cameraController = new CameraController(4, 0.01);
+  const cameraController = new CameraController(6, 0.01);
   cameraController.setRotation(Math.PI / 8, 0);
   const scene = new Scene();
 
   const axes = new AxesHelper(2);
   scene.add(axes);
 
-  const ground = createGround();
+  const groundTexture = await fetchTexture(grassImageUrl);
+  groundTexture.wrapS = RepeatWrapping;
+  groundTexture.wrapT = RepeatWrapping;
+  groundTexture.repeat.set(6, 6);
+
+  const ground = createGround(groundTexture);
   scene.add(ground);
 
   const characterGltf = await fetchGltf(characterGltfSrc);
@@ -75,9 +83,13 @@ export function createRenderer() {
   return renderer;
 }
 
-function createGround() {
+function createGround(texture: Texture) {
   const geometry = new PlaneGeometry(100, 100);
-  const material = new MeshLambertMaterial({ color: 'gray', side: DoubleSide });
+  const material = new MeshLambertMaterial({
+    color: 'gray',
+    side: DoubleSide,
+    map: texture,
+  });
   const ground = new Mesh(geometry, material);
   ground.rotation.x = Math.PI / 2;
   ground.receiveShadow = true;
