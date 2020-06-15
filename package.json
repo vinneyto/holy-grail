@@ -1,8 +1,8 @@
 {
-  "name": "holy-diablo",
+  "name": "holy-grail",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/vinneyto/holy-diablo.git",
+  "repository": "https://github.com/vinneyto/holy-grail.git",
   "author": "vinneyto <vinneyto@gmail.com>",
   "license": "MIT",
   "scripts": {
