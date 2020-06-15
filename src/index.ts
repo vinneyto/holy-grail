@@ -4,6 +4,10 @@ import {
   PerspectiveCamera,
   Scene,
   AxesHelper,
+  PlaneGeometry,
+  MeshLambertMaterial,
+  Mesh,
+  DoubleSide,
 } from 'three';
 import { resizeRenderer } from './util';
 import { CameraController } from './CameraController';
@@ -17,6 +21,9 @@ async function start() {
 
   const axes = new AxesHelper(2);
   scene.add(axes);
+
+  const ground = createGround();
+  scene.add(ground);
 
   const render = () => {
     resizeRenderer(renderer, camera);
@@ -45,4 +52,12 @@ export function createRenderer() {
   renderer.domElement.style.height = '100%';
 
   return renderer;
+}
+
+function createGround() {
+  const geometry = new PlaneGeometry(100, 100);
+  const material = new MeshLambertMaterial({ color: 'gray', side: DoubleSide });
+  const ground = new Mesh(geometry, material);
+  ground.rotation.x = Math.PI / 2;
+  return ground;
 }
