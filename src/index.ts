@@ -3,10 +3,7 @@ import {
   Color,
   PerspectiveCamera,
   Scene,
-  BoxGeometry,
-  MeshLambertMaterial,
-  Mesh,
-  PointLight,
+  AxesHelper,
 } from 'three';
 import { resizeRenderer } from './util';
 import { CameraController } from './CameraController';
@@ -15,22 +12,16 @@ async function start() {
   const renderer = createRenderer();
   const camera = new PerspectiveCamera(75, 1, 0.1, 100);
   const cameraController = new CameraController(4, 0.01);
+  cameraController.setRotation(Math.PI / 8, 0);
   const scene = new Scene();
 
-  const geometry = new BoxGeometry(1, 1, 1);
-  const material = new MeshLambertMaterial({ color: 0xff0000 });
-  const cube = new Mesh(geometry, material);
-  scene.add(cube);
-
-  const light = new PointLight();
-  scene.add(light);
+  const axes = new AxesHelper(2);
+  scene.add(axes);
 
   const render = () => {
     resizeRenderer(renderer, camera);
 
     cameraController.update(camera);
-
-    light.position.copy(camera.position);
 
     renderer.render(scene, camera);
     requestAnimationFrame(render);
