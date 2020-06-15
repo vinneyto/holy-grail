@@ -9,13 +9,13 @@ import {
   PointLight,
 } from 'three';
 import { resizeRenderer } from './util';
+import { CameraController } from './CameraController';
 
 async function start() {
   const renderer = createRenderer();
   const camera = new PerspectiveCamera(75, 1, 0.1, 100);
+  const cameraController = new CameraController(4, 0.01);
   const scene = new Scene();
-
-  camera.position.z = 5;
 
   const geometry = new BoxGeometry(1, 1, 1);
   const material = new MeshLambertMaterial({ color: 0xff0000 });
@@ -27,6 +27,8 @@ async function start() {
 
   const render = () => {
     resizeRenderer(renderer, camera);
+
+    cameraController.update(camera);
 
     light.position.copy(camera.position);
 
