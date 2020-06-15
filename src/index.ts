@@ -8,6 +8,7 @@ import {
   MeshLambertMaterial,
   Mesh,
   DoubleSide,
+  DirectionalLight,
 } from 'three';
 import { resizeRenderer } from './util';
 import { CameraController } from './CameraController';
@@ -24,6 +25,10 @@ async function start() {
 
   const ground = createGround();
   scene.add(ground);
+
+  const sun = createSun();
+  sun.position.set(0, 1, 0);
+  scene.add(sun);
 
   const render = () => {
     resizeRenderer(renderer, camera);
@@ -60,4 +65,9 @@ function createGround() {
   const ground = new Mesh(geometry, material);
   ground.rotation.x = Math.PI / 2;
   return ground;
+}
+
+function createSun() {
+  const sun = new DirectionalLight('white');
+  return sun;
 }
