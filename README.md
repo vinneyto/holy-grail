@@ -24,7 +24,7 @@ Demo for HolyJS 2020 Workshop
 
 - [raycaster](https://github.com/vinneyto/holy-grail/blob/raycaster/src/index.ts#L64)
 
-- [character-rotation](https://github.com/vinneyto/holy-grail/blob/character-rotation/src/GameController.ts#L7)
+- [character-rotation](https://github.com/vinneyto/holy-grail/blob/character-rotation/src/CharacterController.ts#L7)
 
 - [character-movement](https://github.com/vinneyto/holy-grail/blob/character-movement/src/CharacterController.ts#L46)
 
