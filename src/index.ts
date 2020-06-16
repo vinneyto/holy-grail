@@ -19,7 +19,7 @@ import { resizeRenderer, fetchGltf, fetchTexture } from './util';
 import { CameraController } from './CameraController';
 import characterGltfSrc from './assets/knight_runnig/scene.gltf';
 import grassImageUrl from './assets/grass.jpg';
-import { CharacterController } from './GameController';
+import { CharacterController } from './CharacterController';
 
 async function start() {
   const renderer = createRenderer();

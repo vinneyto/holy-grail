@@ -1,4 +1,4 @@
-import { Object3D, Vector3, Matrix4, Matrix3 } from 'three';
+import { Object3D, Vector3, Matrix4 } from 'three';
 
 export class CharacterController {
   constructor(private readonly character: Object3D) {}
