@@ -15,6 +15,7 @@ import {
   Raycaster,
   Vector2,
   Clock,
+  AnimationMixer,
 } from 'three';
 import { resizeRenderer, fetchGltf, fetchTexture } from './util';
 import { CameraController } from './CameraController';
@@ -27,7 +28,7 @@ async function start() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFSoftShadowMap;
   const camera = new PerspectiveCamera(75, 1, 0.1, 100);
-  const cameraController = new CameraController(6, 0.01);
+  const cameraController = new CameraController(8, 0.01);
   cameraController.setRotation(Math.PI / 8, 0);
   const scene = new Scene();
 
@@ -47,6 +48,9 @@ async function start() {
   characterGltf.scene.scale.set(0.5, 0.5, 0.5);
   scene.add(characterGltf.scene);
 
+  const animationMixer = new AnimationMixer(characterGltf.scene);
+  const runAction = animationMixer.clipAction(characterGltf.animations[0]);
+
   const sun = createSun();
   sun.position.set(1, 1, 1).normalize();
   scene.add(sun);
@@ -54,7 +58,10 @@ async function start() {
   const ambient = new AmbientLight();
   scene.add(ambient);
 
-  const characterController = new CharacterController(characterGltf.scene);
+  const characterController = new CharacterController(
+    characterGltf.scene,
+    runAction
+  );
 
   document.addEventListener('mouseup', (e) => {
     const mouse = new Vector2(
@@ -80,7 +87,11 @@ async function start() {
 
     characterController.update(delta);
 
+    animationMixer.update(delta);
+
     cameraController.update(camera);
+
+    cameraController.center.copy(characterGltf.scene.position);
 
     renderer.render(scene, camera);
     requestAnimationFrame(render);

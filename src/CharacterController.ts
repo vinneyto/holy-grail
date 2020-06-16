@@ -1,4 +1,4 @@
-import { Object3D, Vector3, Matrix4 } from 'three';
+import { Object3D, Vector3, Matrix4, AnimationAction } from 'three';
 
 const VELOCITY = 2;
 
@@ -33,7 +33,10 @@ class Movement {
 export class CharacterController {
   private movement?: Movement;
 
-  constructor(private readonly character: Object3D) {}
+  constructor(
+    private readonly character: Object3D,
+    private readonly runActions: AnimationAction
+  ) {}
 
   startMovement(to: Vector3) {
     const m = new Matrix4().lookAt(
@@ -44,6 +47,7 @@ export class CharacterController {
     this.character.rotation.setFromRotationMatrix(m);
 
     this.movement = new Movement(this.character.position, to);
+    this.runActions.play();
   }
 
   update(delta: number) {
@@ -54,6 +58,7 @@ export class CharacterController {
 
       if (this.movement.isFinished()) {
         this.movement = undefined;
+        this.runActions.stop();
       }
     }
   }
