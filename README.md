@@ -2,8 +2,6 @@
 
 Demo for HolyJS 2020 Workshop
 
-# <<<<<<< HEAD
-
 ## Roadmap
 
 - [game-loop](https://github.com/vinneyto/holy-grail/blob/game-loop/src/index.ts)
@@ -36,8 +34,7 @@ Demo for HolyJS 2020 Workshop
 
 ## Links
 
-> > > > > > > master
-> > > > > > > [Turntable camera](https://three-shader.web.app/?demo=vinneyto-camera-demo)
+[Turntable camera](https://three-shader.web.app/?demo=vinneyto-camera-demo)
 
 [Three.js](https://threejs.org/)
 
