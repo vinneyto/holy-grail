@@ -14,6 +14,7 @@ import {
   RepeatWrapping,
   Raycaster,
   Vector2,
+  Clock,
 } from 'three';
 import { resizeRenderer, fetchGltf, fetchTexture } from './util';
 import { CameraController } from './CameraController';
@@ -70,8 +71,14 @@ async function start() {
     }
   });
 
+  const clock = new Clock();
+
   const render = () => {
     resizeRenderer(renderer, camera);
+
+    const delta = clock.getDelta();
+
+    characterController.update(delta);
 
     cameraController.update(camera);
 
