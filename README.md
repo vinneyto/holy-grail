@@ -26,6 +26,12 @@ Demo for HolyJS 2020 Workshop
 
 - [character-rotation](https://github.com/vinneyto/holy-grail/blob/character-rotation/src/GameController.ts#L7)
 
+- [character-movement](https://github.com/vinneyto/holy-grail/blob/character-movement/src/CharacterController.ts#L46)
+
+- [character-animation](https://github.com/vinneyto/holy-grail/blob/character-animation/src/index.ts#L51)
+
+- [destination-marker](https://github.com/vinneyto/holy-grail/blob/destination-marker/src/CharacterController.ts#L56)
+
 ## Links
 
 [Turntable camera](https://three-shader.web.app/?demo=vinneyto-camera-demo)
