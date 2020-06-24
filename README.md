@@ -14,13 +14,13 @@ Demo for HolyJS 2020 Workshop
 
 - [ground](https://github.com/vinneyto/holy-grail/blob/ground/src/index.ts#L25)
 
+- [ground-texture](https://github.com/vinneyto/holy-grail/blob/ground-texture/src/index.ts#L39)
+
 - [sun](https://github.com/vinneyto/holy-grail/blob/sun/src/index.ts#L29)
 
 - [character](https://github.com/vinneyto/holy-grail/blob/character/src/index.ts#L30)
 
 - [shadows](https://github.com/vinneyto/holy-grail/blob/shadows/src/index.ts#L21)
-
-- [ground-texture](https://github.com/vinneyto/holy-grail/blob/ground-texture/src/index.ts#L39)
 
 - [raycaster](https://github.com/vinneyto/holy-grail/blob/raycaster/src/index.ts#L64)
 
